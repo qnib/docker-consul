@@ -3,6 +3,10 @@
 PIDFILE=/var/run/consul.pid
 
 # if consul in env, join
+JOIN=""
+if [ "X${CONSUL_PORT_8300_TCP_ADDR}" != "X" ];then
+   JOIN="-join=${CONSUL_PORT_8300_TCP_ADDR}"
+fi
 
 ## Check if eth0 already exists
 ADDR=eth1
@@ -19,5 +23,4 @@ mkdir -p /etc/consul.d
 mkdir -p /var/consul/
 
 /usr/bin/consul agent -pid-file=${PIDFILE} -server -data-dir /var/consul/ -config-dir=/etc/consul.d/ \
-                         -bootstrap-expect 1 -ui-dir /opt/consul-web-ui/ -client=0.0.0.0
-
+                      ${JOIN} -bootstrap-expect 1 -ui-dir /opt/consul-web-ui/ -client=0.0.0.0
