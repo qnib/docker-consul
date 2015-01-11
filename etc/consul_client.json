@@ -2,5 +2,5 @@
   "datacenter": "docker",
   "data_dir": "/var/consul",
   "log_level": "INFO",
-  "domain": "qnib.",
+  "domain": "qnib."
 }
