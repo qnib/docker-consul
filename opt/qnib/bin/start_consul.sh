@@ -17,13 +17,17 @@ if [ ${EC} -eq 1 ];then
     pipework --wait
 fi
 
-trap "{ kill $(cat ${PIDFILE}) }" SIGINT SIGTERM
+trap "/opt/qnib/bin/kill_consul.sh" SIGINT SIGTERM 15 9 10
 
 mkdir -p /etc/consul.d
 mkdir -p /var/consul/
 
 if [ "X${JOIN}" != "X" ];then
-    /usr/bin/consul agent -config-file=/etc/consul_client.json ${JOIN}
+    /usr/bin/consul agent -pid-file=${PIDFILE} -config-file=/etc/consul_client.json -config-dir=/etc/consul.d/ ${JOIN} &
 else
-    /usr/bin/consul agent -config-file=/etc/consul_server.json 
+    /usr/bin/consul agent -pid-file=${PIDFILE} -config-file=/etc/consul_server.json -config-dir=/etc/consul.d/ &
 fi
+
+while [ -f ${PIDFILE} ];do
+    sleep 1
+done
