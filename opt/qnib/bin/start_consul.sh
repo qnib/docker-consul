@@ -23,8 +23,7 @@ mkdir -p /etc/consul.d
 mkdir -p /var/consul/
 
 if [ "X${JOIN}" != "X" ];then
-    /usr/bin/consul agent -pid-file=${PIDFILE} -server -data-dir /var/consul/ -config-dir=/etc/consul.d/ ${JOIN} 
+    /usr/bin/consul agent -config-file=/etc/consul_client.json ${JOIN}
 else
-    /usr/bin/consul agent -pid-file=${PIDFILE} -server -data-dir /var/consul/ -config-dir=/etc/consul.d/ ${JOIN} \
-                          -bootstrap-expect 1 -ui-dir /opt/consul-web-ui/ -client=0.0.0.0
+    /usr/bin/consul agent -config-file=/etc/consul_server.json 
 fi

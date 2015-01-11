@@ -1,0 +1,15 @@
+{
+  "datacenter": "docker",
+  "data_dir": "/var/consul",
+  "config_dir": "/etc/consul.d",
+  "pid_file": "/var/run/consul.pid",
+  "log_level": "INFO",
+  "domain": "qnib.",
+  "server": true,
+  "client": "0.0.0.0",
+  "ui_dir": "/opt/consul-web-ui",
+  "ports": {
+      "dns": 53
+  },
+  "recursor": "8.8.8.8"
+}
