@@ -24,7 +24,7 @@ mkdir -p /var/consul/
 
 if [ "X${JOIN}" != "X" ];then
     # join someone - therefore a client
-    /usr/bin/consul agent -pid-file=${PIDFILE} -server -data-dir /var/consul/ -config-dir=/etc/consul.d/ ${JOIN} &
+    /usr/bin/consul agent -pid-file=${PIDFILE} -data-dir /var/consul/ -config-dir=/etc/consul.d/ ${JOIN} &
 else
     # server mode
     /usr/bin/consul agent -pid-file=${PIDFILE} -server -data-dir /var/consul/ -config-dir=/etc/consul.d/ \
