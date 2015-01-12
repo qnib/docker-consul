@@ -3,7 +3,7 @@ MAINTAINER "Christian Kniep <christian@qnib.org>"
 
 RUN yum install -y qnib-consul
 RUN yum clean all;yum install -y qnib-consul-web-ui
-EXPOSE 8300
+
 ADD etc/consul_server.json /etc/consul_server.json
 ADD etc/consul_client.json /etc/consul_client.json
 
