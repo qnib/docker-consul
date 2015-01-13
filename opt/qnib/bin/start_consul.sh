@@ -4,9 +4,12 @@ PIDFILE=/var/run/consul.pid
 
 # if consul in env, join
 JOIN=""
-if [ "X${CONSUL_PORT_8300_TCP_ADDR}" != "X" ];then
-   JOIN="-join=${CONSUL_PORT_8300_TCP_ADDR}"
-fi
+for env_line in $(env);do
+   if [ $(echo ${env_line} |grep -c PORT_8500_TCP_ADDR) -ne 0 ];then
+      JOIN="-join=$(echo ${env_line}|awk -F\= '{print $2}')"
+      break
+   fi
+done
 
 ## Check if eth0 already exists
 ADDR=eth0
