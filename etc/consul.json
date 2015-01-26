@@ -8,6 +8,7 @@
     "ui_dir": "/opt/consul-web-ui/",
     "client_addr": "0.0.0.0",
     "start_join": [],
+    "recursor": "8.8.8.8",
     "ports": {
         "dns": 53
     }
