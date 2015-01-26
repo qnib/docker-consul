@@ -17,12 +17,15 @@ for env_line in $(env);do
     elif [ $(echo ${env_line} |grep -c PORT_8500_TCP_ADDR) -ne 0 ];then
         LINKED_SERVER="$(echo ${env_line}|awk -F\= '{print $2}')"
         break
-   fi
+    fi
 done
+if [ "X${LINKED_SERVER}" == "X$(ip -o -4 address show eth0|awk '{print $4}'|awk -F\/ '{print $1}')" ];then
+    LINKED_SERVER=0
+fi
 if [ "X${LINKED_SERVER}" != "X0" ];then
-      sed -i -e "s#\"server\":.*#\"server\": false,#" /etc/consul.json
-      sed -i -e "s#\"bootstrap\":.*#\"bootstrap\": false,#" /etc/consul.json
-      sed -i -e "s#\"start_join\":.*#\"start_join\": [\"${LINKED_SERVER}\"],#" /etc/consul.json
+    sed -i -e "s#\"server\":.*#\"server\": false,#" /etc/consul.json
+    sed -i -e "s#\"bootstrap\":.*#\"bootstrap\": false,#" /etc/consul.json
+    sed -i -e "s#\"start_join\":.*#\"start_join\": [\"${LINKED_SERVER}\"],#" /etc/consul.json
 fi
 ## Check if eth0 already exists
 ip addr show ${ADDR} > /dev/null
