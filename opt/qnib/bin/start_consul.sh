@@ -48,9 +48,15 @@ if [ "X${LINKED_SERVER}" != "X0" ];then
     sed -i -e "s#\"start_join\":.*#\"start_join\": [\"${LINKED_SERVER}\"],#" /etc/consul.json
 fi
 
+## If we should join another server
+JOIN_WAN=""
+if [ "X${WAN_SERVER}" != "X" ];then
+    JOIN_WAN="-join-wan=${WAN_SERVER}"
+fi
+
 mkdir -p /etc/consul.d
 mkdir -p /var/consul/
-${CONSUL_BIN} agent -pid-file=${PIDFILE} -config-file=/etc/consul.json -config-dir=/etc/consul.d &
+${CONSUL_BIN} agent -pid-file=${PIDFILE} -config-file=/etc/consul.json -config-dir=/etc/consul.d ${JOIN_WAN} &
 
 sleep 1
 
