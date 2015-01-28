@@ -32,6 +32,9 @@ if [ ${EC} -eq 1 ];then
 fi
 IPv4=$(echo ${IPv4_RAW}|egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")
 if [ "X${ADDV_ADDR}" != "X" ];then
+    if [ "X${ADDV_ADDR}" == "XSERVER" ];then
+        ADDV_ADDR=$(cat /host_info/ip_eth0)
+    fi
     sed -i -e "s#\"advertise_addr\":.*#\"advertise_addr\": \"${ADDV_ADDR}\",#" /etc/consul.json
 else
     sed -i -e "s#\"advertise_addr\":.*#\"advertise_addr\": \"${IPv4}\",#" /etc/consul.json
