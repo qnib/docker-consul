@@ -3,9 +3,9 @@
 PIDFILE=/var/run/consul.pid
 CONSUL_BIN=/usr/local/bin/consul
 ADDR=eth0
-RUN_SERVER=${RUN_SERVER:auto}
+RUN_SERVER=${RUN_SERVER-auto}
 
-if [ ! -d ${CONSUL_BIN} ];then
+if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
 fi
 
