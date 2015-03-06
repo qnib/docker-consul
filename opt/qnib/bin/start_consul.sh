@@ -65,9 +65,9 @@ else
         sed -i -e "s#\"server\":.*#\"server\": false,#" /etc/consul.json
         sed -i -e "s#\"bootstrap\":.*#\"bootstrap\": false,#" /etc/consul.json
     fi
-    if [ "X${ENABLE_SYSLOG}" == "Xtrue" ];then
-        sed -i -e "s#\"enable_syslog\":.*#\"enable_syslog\": true,#" /etc/consul.json
-    fi
+    #if [ "X${ENABLE_SYSLOG}" == "Xtrue" ];then
+    #    sed -i -e "s#\"enable_syslog\":.*#\"enable_syslog\": true,#" /etc/consul.json
+    #fi
 
     mkdir -p /etc/consul.d
     mkdir -p /var/consul/
