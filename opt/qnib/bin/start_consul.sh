@@ -9,6 +9,11 @@ if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
 fi
 
+if [ "x${FORWARD_TO_LOGSTASH" == "xtrue" ];then
+    sed -i '' -e 's/^stdout_events_enabled.*/stdout_events_enabled = true/' /etc/supervisord.d/consul.ini
+    sed -i '' -e 's/^stderr_events_enabled.*/stderr_events_enabled = true/' /etc/supervisord.d/consul.ini
+    sed -i '' -e 's/^redirect_stderr.*/redirect_stderr = false/' /etc/supervisord.d/consul.ini
+fi
 # if consul in env, join
 LINKED_SERVER=0
 for env_line in $(env);do
