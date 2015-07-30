@@ -1,2 +1,0 @@
-destination d_udp { udp("logstash.syslog.service.consul" port(5514)); };
-log { source(s_sys); destination(d_udp); };

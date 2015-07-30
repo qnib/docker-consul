@@ -1,8 +1,0 @@
-{
-  "check": {
-    "id": "syslog-ng",
-    "name": "Check if syslog-ng is working",
-    "script": "supervisorctl status syslog-ng|grep RUNNING",
-    "interval": "10s"
-  }
-}
