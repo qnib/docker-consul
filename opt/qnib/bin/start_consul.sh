@@ -4,6 +4,7 @@ PIDFILE=/var/run/consul.pid
 CONSUL_BIN=/usr/local/bin/consul
 ADDR=eth0
 RUN_SERVER=${RUN_SERVER-auto}
+LINKED_SERVER=${LINKED_SERVER-0}
 
 if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
@@ -15,7 +16,6 @@ if [ "x${FORWARD_TO_LOGSTASH}" == "xtrue" ];then
     sed -i '' -e 's/^redirect_stderr.*/redirect_stderr = false/' /etc/supervisord.d/consul.ini
 fi
 # if consul in env, join
-LINKED_SERVER=0
 for env_line in $(env);do
     if [ $(echo ${env_line} |grep -c CONSUL_SERVER) -ne 0 ];then
         LINKED_SERVER="$(echo ${env_line}|awk -F\= '{print $2}')"
@@ -29,7 +29,7 @@ for env_line in $(env);do
     fi
 done
 if [ "X${NO_CONSUL}" != "X" ];then
-    echo "Do not start any docker server"
+    echo "Do not start any consul server"
     touch ${PIDFILE}
 else
     if [ "X${LINKED_SERVER}" == "X$(ip -o -4 address show eth0|awk '{print $4}'|awk -F\/ '{print $1}')" ];then
