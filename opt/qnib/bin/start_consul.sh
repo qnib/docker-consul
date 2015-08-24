@@ -73,6 +73,9 @@ else
     #if [ "X${ENABLE_SYSLOG}" == "Xtrue" ];then
     #    sed -i -e "s#\"enable_syslog\":.*#\"enable_syslog\": true,#" /etc/consul.json
     #fi
+    if [ "X${DNS_RECURSOR}" != "X" ];then
+        sed -i -e "s#\"recursor\":.*#\"recursor\": \"${DNS_RECURSOR}\",#" /etc/consul.json
+    fi
 
     mkdir -p /etc/consul.d
     mkdir -p /var/consul/
