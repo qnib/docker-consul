@@ -1,4 +1,4 @@
-FROM qnib/syslog
+FROM qnib/syslog:cos7
 
 RUN yum install -y unzip bind-utils
 # consul
