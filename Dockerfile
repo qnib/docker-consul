@@ -11,8 +11,8 @@ ADD opt/qnib/bin/start_consul.sh /opt/qnib/bin/start_consul.sh
 
 # consul-template
 ENV CT_VER 0.10.0
-WORKDIR /tmp/
-RUN wget -q -O /tmp/consul-template.tar.gz https://github.com/hashicorp/consul-template/releases/download/v${CT_VER}/consul-template_${CT_VER}_linux_amd64.tar.gz && \
+RUN cd /tmp/ && \
+    wget -q -O /tmp/consul-template.tar.gz https://github.com/hashicorp/consul-template/releases/download/v${CT_VER}/consul-template_${CT_VER}_linux_amd64.tar.gz && \
     tar xf /tmp/consul-template.tar.gz && mv /tmp/consul-template_${CT_VER}_linux_amd64/consul-template /usr/local/bin/ && \
     rm -rf /tmp/consul-template_${CT_VER}_linux_amd64
 # supervisor start-scripts
