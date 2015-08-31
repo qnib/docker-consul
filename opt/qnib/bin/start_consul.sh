@@ -62,6 +62,10 @@ if [ "X${ADDV_ADDR}" != "X" ];then
 else
     sed -i -e "s#\"advertise_addr\":.*#\"advertise_addr\": \"${IPv4}\",#" /etc/consul.json
 fi
+### Addvertise address wan
+if [ "X${CONSUL_ADDV_ADDR_WAN}" != "X" ];then
+    sed -i -e "s#\"advertise_addr_wan\":.*#\"advertise_addr_wan\": \"${CONSUL_ADDV_ADDR_WAN}\",#" /etc/consul.json
+fi
 if [ "X${DC_NAME}" != "X" ];then
     sed -i -e "s#\"datacenter\":.*#\"datacenter\": \"${DC_NAME}\",#" /etc/consul.json
 fi
