@@ -10,11 +10,19 @@ if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
 fi
 
+if [ "X${CONSUL_NODE_NAME}" == "X" ];then
+    NODE_NAME=$(hostname)
+else
+    NODE_NAME=${CONSUL_NODE_NAME}
+fi
+
 if [ "X${NO_CONSUL}" != "X" ];then
     echo "Do not start any consul server"
     touch ${PIDFILE}
     exit 0
 fi
+
+sed -i -e "s#\"node_name\":.*#\"node_name\": \"${NODE_NAME}\",#" /etc/consul.json
 
 if [ "x${FORWARD_TO_LOGSTASH}" == "xtrue" ];then
     sed -i '' -e 's/^stdout_events_enabled.*/stdout_events_enabled = true/' /etc/supervisord.d/consul.ini
