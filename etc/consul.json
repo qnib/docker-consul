@@ -9,6 +9,7 @@
     "client_addr": "0.0.0.0",
     "start_join": [],
     "advertise_addr": "",
+    "node_name": "hostname",
     "recursor": "8.8.8.8",
     "ports": {
         "dns": 53

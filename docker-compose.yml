@@ -1,38 +1,37 @@
-master:
+dc1m:
   image: qnib/consul
   ports:
    - "8500:8500"
    - "8302:8302"
   environment:
-   - DC_NAME=global
+   - DC_NAME=dc1
+   - BOOTSTRAP_SERVER=true
+   - RUN_SERVER=true
   dns: 127.0.0.1
-  hostname: master
+  hostname: dc1master
 
-dc1m01:
+dc1c1:
   image: qnib/consul
+  dns: 127.0.0.1
+  hostname: dc1cli1
   ports:
    - "18500:8500"
+   - "18302:8302"
   environment:
    - DC_NAME=dc1
-   - WAN_SERVER=172.17.42.1
-  dns: 127.0.0.1
-  hostname: dc1-master01
+   - RUN_SERVER=true
+  links:
+   - dc1m:consul
 
-dc2m01:
+dc1c2:
   image: qnib/consul
+  dns: 127.0.0.1
+  hostname: dc1cli2
   ports:
    - "28500:8500"
-  environment:
-   - DC_NAME=dc2
-   - WAN_SERVER=172.17.42.1
-  dns: 127.0.0.1
-  hostname: dc2-master01
-
-dc1c01:
-  image: qnib/consul
+   - "28302:8302"
   environment:
    - DC_NAME=dc1
+   - RUN_SERVER=true
   links:
-   - dc1m01:consul
-  dns: 127.0.0.1
-  hostname: dc1-client01
+   - dc1c1:consul
