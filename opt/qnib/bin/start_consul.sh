@@ -5,6 +5,8 @@ CONSUL_BIN=/usr/local/bin/consul
 ADDR=eth0
 RUN_SERVER=${RUN_SERVER-auto}
 LINKED_SERVER=${LINKED_SERVER-0}
+BOOTSTRAP_CONSUL=${BOOTSTRAP_CONSUL}
+WAN_SERVER=${WAN_SERVER}
 
 if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
