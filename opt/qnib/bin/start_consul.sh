@@ -5,6 +5,8 @@ CONSUL_BIN=/usr/local/bin/consul
 ADDR=eth0
 RUN_SERVER=${RUN_SERVER-auto}
 LINKED_SERVER=${LINKED_SERVER-0}
+BOOTSTRAP_CONSUL=${BOOTSTRAP_CONSUL}
+WAN_SERVER=${WAN_SERVER}
 
 if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
@@ -61,6 +63,10 @@ if [ "X${ADDV_ADDR}" != "X" ];then
     sed -i -e "s#\"advertise_addr\":.*#\"advertise_addr\": \"${ADDV_ADDR}\",#" /etc/consul.json
 else
     sed -i -e "s#\"advertise_addr\":.*#\"advertise_addr\": \"${IPv4}\",#" /etc/consul.json
+fi
+### Addvertise address wan
+if [ "X${CONSUL_ADDV_ADDR_WAN}" != "X" ];then
+    sed -i -e "s#\"advertise_addr_wan\":.*#\"advertise_addr_wan\": \"${CONSUL_ADDV_ADDR_WAN}\",#" /etc/consul.json
 fi
 if [ "X${DC_NAME}" != "X" ];then
     sed -i -e "s#\"datacenter\":.*#\"datacenter\": \"${DC_NAME}\",#" /etc/consul.json
