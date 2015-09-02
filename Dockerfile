@@ -1,9 +1,9 @@
-FROM qnib/syslog
+FROM qnib/syslog:fd22
 
-RUN yum clean all; yum install -y unzip bind-utils
+RUN dnf install -y unzip bind-utils tar bsdtar
 # consul
-RUN cd /tmp/ && curl -Ls -o /tmp/consul.zip  https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip && \
-    unzip /tmp/consul.zip && rm -f /tmp/consul.zip && mv consul /usr/local/bin/
+RUN curl -fsL https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip |bsdtar xf - -C /usr/local/bin/ && \
+    chmod 755 /usr/local/bin/consul
 RUN cd /tmp/ && curl -Ls -o /tmp/consul_web_ui.zip http://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip && \
     unzip /tmp/consul_web_ui.zip && rm -f /tmp/consul_web_ui.zip && mv dist /opt/consul-web-ui
 ADD etc/consul.json /etc/consul.json
