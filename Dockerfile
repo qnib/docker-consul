@@ -8,11 +8,11 @@ RUN cd /tmp/ && curl -Ls -o /tmp/consul_web_ui.zip http://dl.bintray.com/mitchel
     unzip /tmp/consul_web_ui.zip && rm -f /tmp/consul_web_ui.zip && mv dist /opt/consul-web-ui
 # consul-template
 RUN yum install -y make golang git-core mercurial && \
-    curl -fsL https://github.com/hashicorp/consul-template/archive/master.zip|bsdtar xf - -C /opt/ && \
-    cd /opt/consul-template-master/ && \
+    curl -fsL https://github.com/qnib/consul-template/archive/a_plus_a.zip|bsdtar xf - -C /opt/ && \
+    mv /opt/consul-template-a_plus_a/ /opt/consul-template && cd /opt/consul-template && \
     GOPATH=/tmp/ make && \
-    mv /opt/consul-template-master/bin/consul-template /usr/local/bin/ && \
-    rm -rf /opt/consul-template-master && \
+    mv /opt/consul-template/bin/consul-template /usr/local/bin/ && \
+    rm -rf /opt/consul-template && \
     yum remove -y make golang git-core mercurial && \
     yum autoremove -y
 # supervisor start-scripts
