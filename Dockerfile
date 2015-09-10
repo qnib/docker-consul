@@ -1,6 +1,6 @@
 FROM qnib/syslog
 
-RUN yum clean all; yum install -y unzip bind-utils
+RUN echo "2015-09-10.1"; yum clean all; yum install -y unzip bind-utils
 # consul
 RUN cd /tmp/ && curl -Ls -o /tmp/consul.zip  https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip && \
     unzip /tmp/consul.zip && rm -f /tmp/consul.zip && mv consul /usr/local/bin/
