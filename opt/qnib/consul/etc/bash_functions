@@ -1,0 +1,30 @@
+#!/bin/bash
+
+## Function to wait for a consul service to appear at least once 
+# $1 => name of service to look for (mandatory) 
+# $2 => Minimal count of instances to look for (optional, defaults to 1)
+function qnib_wait_for_srv {
+    if [ "X${MASTER_DC}" != "X" ];then
+        if [ $(curl -s 'consul.service.consul:8500/v1/catalog/datacenters'|jq "."|grep -c ${MASTER_DC}) -eq 0 ];then
+            echo "Could not find DC '${MASTER_DC}'. Use default 'dc1'..."
+        else
+            DC="?dc=${MASTER_DC}"
+        fi
+    fi
+    if [ "X${1}" == "X" ];then
+        echo "No service name given... please provide at least this information! :)"
+        exit 0
+    fi
+    json_res=$(curl -s consul.service.consul:8500/v1/catalog/service/${1}${DC})
+    EC=$?
+    if [ ${EC} -ne 0 ];then
+        echo "Something went wrong (EC:${EC}): ${json_res}"
+    fi
+    if [ $(echo ${json_res} |jq ". | length") -lt ${2-1} ];then
+        echo -n "."
+        sleep 1
+        wait_for_srv ${1} ${2-1}
+    else
+        echo "OK"
+    fi
+}
