@@ -36,7 +36,7 @@ for env_line in $(env);do
     if [ $(echo ${env_line} |grep -c CONSUL_SERVER) -ne 0 ];then
         LINKED_SERVER="$(echo ${env_line}|awk -F\= '{print $2}')"
         break
-    elif [ $(echo ${env_line} |egrep -c "^CONSU.*_ADDR$") -ne 0 ];then
+    elif [ $(echo ${env_line} |egrep -c "^CONSU.*_ADDR=") -ne 0 ];then
         LINKED_SERVER="$(echo ${env_line}|awk -F\= '{print $2}')"
         break
     elif [ $(echo ${env_line} |grep -c PORT_8500_TCP_ADDR) -ne 0 ];then
