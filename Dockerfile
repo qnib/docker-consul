@@ -1,6 +1,6 @@
 FROM qnib/syslog
 
-RUN yum clean all; yum install -y unzip bind-utils bsdtar
+RUN yum clean all; yum install -y unzip bind-utils bsdtar jq
 # consul
 RUN cd /tmp/ && curl -Ls -o /tmp/consul.zip  https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip && \
     unzip /tmp/consul.zip && rm -f /tmp/consul.zip && mv consul /usr/local/bin/
@@ -19,5 +19,7 @@ RUN yum install -y make golang git-core mercurial && \
 ADD etc/supervisord.d/ /etc/supervisord.d/
 ADD etc/consul.json /etc/consul.json
 ADD opt/qnib/bin/start_consul.sh /opt/qnib/bin/start_consul.sh
+
+ADD opt/qnib/consul/etc/bash_functions /opt/qnib/consul/etc/
 
 
