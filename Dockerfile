@@ -16,6 +16,6 @@ RUN cd /tmp/ && \
 # supervisor start-scripts
 ADD etc/supervisord.d/ /etc/supervisord.d/
 ADD etc/consul.json /etc/consul.json
-ADD opt/qnib/bin/start_consul.sh /opt/qnib/bin/start_consul.sh
+COPY opt/qnib/bin/start_consul.sh /opt/qnib/bin/start_consul.sh
 
 
