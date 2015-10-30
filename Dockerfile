@@ -17,3 +17,4 @@ ADD etc/consul.json /etc/consul.json
 ADD opt/qnib/bin/start_consul.sh /opt/qnib/bin/start_consul.sh
 
 
+ADD opt/qnib/consul/etc/bash_functions.sh /opt/qnib/consul/etc/
