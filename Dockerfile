@@ -2,7 +2,7 @@ FROM qnib/syslog
 
 ENV BOOTSTRAP_CONSUL=false \
     RUN_SERVER=false
-RUN echo "2015-10-19.1"; yum clean all; yum install -y unzip bsdtar #bind-utils
+RUN echo "2015-10-19.1"; yum clean all; yum install -y unzip bsdtar jq
 
 # consul
 RUN curl -fsL https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip |bsdtar xf - -C /usr/local/bin/ && \
