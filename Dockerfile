@@ -1,5 +1,7 @@
 FROM qnib/syslog
 
+ENV BOOTSTRAP_CONSUL=false \
+    RUN_SERVER=false
 RUN echo "2015-10-19.1"; yum clean all; yum install -y unzip bsdtar #bind-utils
 
 # consul
