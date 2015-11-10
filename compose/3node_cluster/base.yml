@@ -9,7 +9,7 @@ consul:
    - "8301:8301/udp"
    - "8300:8300"
   environment:
-   - DC_NAME=dc1
+   - DC_NAME=qnib
    - CONSUL_BOOTSTRAP_SOLO=true
    - CONSUL_CLUSTER_IPS=192.168.99.100,192.168.99.101,192.168.99.102
    - RUN_SERVER=true
