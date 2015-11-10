@@ -6,6 +6,8 @@ ADDR=eth0
 RUN_SERVER=${RUN_SERVER-auto}
 LINKED_SERVER=${LINKED_SERVER-0}
 BOOTSTRAP_CONSUL=${BOOTSTRAP_CONSUL}
+CONSUL_BOOTSTRAP_SOLO=${CONSUL_BOOTSTRAP_SOLO-$BOOTSTRAP_CONSUL}
+CONSUL_CLUSTER_IPS=${CONSUL_CLUSTER_IPS-$LINKDED_SERVER}
 WAN_SERVER=${WAN_SERVER}
 
 if [ ! -f ${CONSUL_BIN} ];then
@@ -34,19 +36,17 @@ fi
 # if consul in env, join
 for env_line in $(env);do
     if [ $(echo ${env_line} |grep -c CONSUL_SERVER) -ne 0 ];then
-        LINKED_SERVER="$(echo ${env_line}|awk -F\= '{print $2}')"
+        CONSUL_CLUSTER_IPS="$(echo ${env_line}|awk -F\= '{print $2}')"
         break
     elif [ $(echo ${env_line} |egrep -c "^CONSU.*_ADDR=") -ne 0 ];then
-        LINKED_SERVER="$(echo ${env_line}|awk -F\= '{print $2}')"
+        CONSUL_CLUSTER_IPS="$(echo ${env_line}|awk -F\= '{print $2}')"
         break
     elif [ $(echo ${env_line} |grep -c PORT_8500_TCP_ADDR) -ne 0 ];then
-        LINKED_SERVER="$(echo ${env_line}|awk -F\= '{print $2}')"
+        CONSUL_CLUSTER_IPS="$(echo ${env_line}|awk -F\= '{print $2}')"
         break
     fi
 done
-if [ "X${LINKED_SERVER}" == "X$(ip -o -4 address show eth0|awk '{print $4}'|awk -F\/ '{print $1}')" ];then
-    LINKED_SERVER=0
-fi
+
 ## Check if eth0 already exists
 IPv4_RAW=$(ip -o -4 addr show ${ADDR})
 EC=$?
@@ -71,8 +71,24 @@ fi
 if [ "X${DC_NAME}" != "X" ];then
     sed -i -e "s#\"datacenter\":.*#\"datacenter\": \"${DC_NAME}\",#" /etc/consul.json
 fi
-if [ "X${LINKED_SERVER}" != "X0" ];then
-    sed -i -e "s#\"start_join\":.*#\"start_join\": [\"${LINKED_SERVER}\"],#" /etc/consul.json
+if [ ! -z "${CONSUL_CLUSTER_IPS}" ];then
+    START_JOIN=""
+    for IP in $(echo ${CONSUL_CLUSTER_IPS} | sed -e 's/,/ /g');do
+       if [ "${MY_IP}" != "X${IP}" ];then
+          if [ $(curl -sI ${IP}:8500/ui/|grep -c "HTTP/1.1 200 OK") -eq 1 ];then
+              START_JOIN+=" ${IP}"
+          fi
+       fi
+    done
+    START_JOIN=$(echo ${START_JOIN}|sed -e 's/ /","/g')
+    if [ "X${START_JOIN}" == "X" ] && [ "X${CONSUL_BOOTSTRAP_SOLO}" != "Xtrue" ];then
+        echo "Could not find any CLUSTER IP '${CONSUL_CLUSTER_IPS}' and CONSUL_BOOTSTRAP_SOLO!=true"
+        exit 1
+    elif [ "X${START_JOIN}" == "X" ] && [ "X${CONSUL_BOOTSTRAP_SOLO}" == "Xtrue" ];then
+        BOOTSTRAP_CONSUL=true
+    else
+        sed -i -e "s#\"start_join\":.*#\"start_join\": [\"${START_JOIN}\"],#" /etc/consul.json
+    fi
 fi
 
 ## If we should join another server

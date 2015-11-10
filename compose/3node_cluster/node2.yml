@@ -1,0 +1,7 @@
+consul:
+    extends:
+        file: base.yml
+        service: consul
+    environment:
+        - MY_IP=192.168.99.102
+        - ADDV_ADDR=192.168.99.102
