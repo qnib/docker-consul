@@ -1,5 +1,6 @@
 consul:
   image: qnib/consul
+  net: host
   ports:
    - "8500:8500"
    - "8400:8400"
@@ -13,4 +14,4 @@ consul:
    - CONSUL_BOOTSTRAP_SOLO=true
    - CONSUL_CLUSTER_IPS=192.168.99.100,192.168.99.101,192.168.99.102
    - RUN_SERVER=true
-  dns: 127.0.0.1
+  #dns: 127.0.0.1

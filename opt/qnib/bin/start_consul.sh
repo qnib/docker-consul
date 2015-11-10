@@ -15,7 +15,7 @@ if [ ! -f ${CONSUL_BIN} ];then
 fi
 
 if [ "X${CONSUL_NODE_NAME}" == "X" ];then
-    NODE_NAME=$(hostname)
+    NODE_NAME=$(hostname -f)
 else
     NODE_NAME=${CONSUL_NODE_NAME}
 fi
@@ -55,7 +55,7 @@ if [ ${EC} -eq 1 ];then
     pipework --wait
     IPv4_RAW=$(ip -o -4 addr show ${ADDR})
 fi
-IPv4=$(echo ${IPv4_RAW}|egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")
+IPv4=$(echo ${IPv4_RAW}|egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"|head -n1)
 if [ "X${ADDV_ADDR}" != "X" ];then
     if [ "X${ADDV_ADDR}" == "XSERVER" ];then
         ADDV_ADDR=$(cat /host_info/ip_eth0)
@@ -74,13 +74,13 @@ fi
 if [ ! -z "${CONSUL_CLUSTER_IPS}" ];then
     START_JOIN=""
     for IP in $(echo ${CONSUL_CLUSTER_IPS} | sed -e 's/,/ /g');do
-       if [ "${MY_IP}" != "X${IP}" ];then
-          if [ $(curl -sI ${IP}:8500/ui/|grep -c "HTTP/1.1 200 OK") -eq 1 ];then
+       if [ "${MY_IP}" != "X${IP}" ] && [ "${NODE_NAME}" != "X${IP}" ];then
+          if [ $(curl --connect-timeout 2 -sI ${IP}:8500/ui/|grep -c "HTTP/1.1 200 OK") -eq 1 ];then
               START_JOIN+=" ${IP}"
           fi
        fi
     done
-    START_JOIN=$(echo ${START_JOIN}|sed -e 's/ /","/g')
+    START_JOIN=$(echo ${START_JOIN}|sed -e 's/ /\",\"/g')
     if [ "X${START_JOIN}" == "X" ] && [ "X${CONSUL_BOOTSTRAP_SOLO}" != "Xtrue" ];then
         echo "Could not find any CLUSTER IP '${CONSUL_CLUSTER_IPS}' and CONSUL_BOOTSTRAP_SOLO!=true"
         exit 1
