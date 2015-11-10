@@ -1,5 +1,5 @@
 consul:
-  image: docker2.r3.03.bera.gaikai.biz:5000/qnib/consul
+  image: qnib/consul
   ports:
    - "8500:8500"
    - "8400:8400"
@@ -9,7 +9,7 @@ consul:
    - "8301:8301/udp"
    - "8300:8300"
   environment:
-   - DC_NAME=qnib
+   - DC_NAME=dc1
    - CONSUL_BOOTSTRAP_SOLO=true
    - CONSUL_CLUSTER_IPS=192.168.99.100,192.168.99.101,192.168.99.102
    - RUN_SERVER=true
