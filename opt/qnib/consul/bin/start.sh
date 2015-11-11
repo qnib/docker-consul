@@ -9,6 +9,7 @@ BOOTSTRAP_CONSUL=${BOOTSTRAP_CONSUL}
 CONSUL_BOOTSTRAP_SOLO=${CONSUL_BOOTSTRAP_SOLO-$BOOTSTRAP_CONSUL}
 CONSUL_CLUSTER_IPS=${CONSUL_CLUSTER_IPS-$LINKDED_SERVER}
 WAN_SERVER=${WAN_SERVER}
+CONSUL_DOMAIN_MATCH=${CONSUL_DOMAIN_MATCH-false}
 
 if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
@@ -19,6 +20,10 @@ if [ "X${CONSUL_NODE_NAME}" == "X" ];then
 else
     NODE_NAME=${CONSUL_NODE_NAME}
 fi
+
+if [ "X${CONSUL_DOMAIN_SUFFIX}" == "X" ] && [ $(echo ${NODE_NAME} | tr '.' '\n' | wc -l) -gt 2 ];then
+    CONSUL_DOMAIN_SUFFIX=$(echo ${NODE_NAME} | cut -d "." -f2-)
+fi 
 
 if [ "X${NO_CONSUL}" != "X" ];then
     echo "Do not start any consul server"
@@ -75,7 +80,10 @@ if [ ! -z "${CONSUL_CLUSTER_IPS}" ];then
     START_JOIN=""
     for IP in $(echo ${CONSUL_CLUSTER_IPS} | sed -e 's/,/ /g');do
        if [ "${MY_IP}" != "X${IP}" ] && [ "${NODE_NAME}" != "X${IP}" ];then
-          if [ $(curl --connect-timeout 2 -sI ${IP}:8500/ui/|grep -c "HTTP/1.1 200 OK") -eq 1 ];then
+          if [ ${CONSUL_DOMAIN_MATCH} == true ] && [ $(echo ${IP} | grep -c ${CONSUL_DOMAIN_SUFFIX}) -ne 1 ];then
+              echo "Kick out '${IP}', since it does not match the CONSUL_DOMAIN_SUFFIX '${CONSUL_DOMAIN_SUFFIX}'"
+              continue
+          elif [ $(curl --connect-timeout 2 -sI ${IP}:8500/ui/|grep -c "HTTP/1.1 200 OK") -eq 1 ];then
               START_JOIN+=" ${IP}"
           fi
        fi

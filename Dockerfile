@@ -16,7 +16,8 @@ RUN curl -Lsf https://releases.hashicorp.com/consul-template/${CT_VER}/consul-te
 # supervisor start-scripts
 ADD etc/supervisord.d/ /etc/supervisord.d/
 ADD etc/consul.json /etc/consul.json
-ADD opt/qnib/bin/start_consul.sh /opt/qnib/bin/start_consul.sh
+ADD opt/qnib/consul/bin/start.sh /opt/qnib/consul/bin/
+RUN ln -s /opt/qnib/consul/bin/start.sh /opt/qnib/bin/start_consul.sh
 
 
 ADD opt/qnib/consul/etc/bash_functions.sh /opt/qnib/consul/etc/
