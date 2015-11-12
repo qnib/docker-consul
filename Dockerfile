@@ -1,5 +1,8 @@
 FROM qnib/syslog:fd22
 
+ENV BOOTSTRAP_CONSUL=false \
+    RUN_SERVER=false
+
 RUN dnf install -y unzip bind-utils tar bsdtar jq
 
 # consul
