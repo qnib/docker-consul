@@ -2,7 +2,7 @@
 
 PIDFILE=/var/run/consul.pid
 CONSUL_BIN=/usr/local/bin/consul
-ADDR=eth0
+NET_DEV=${CONSUL_NET_DEV-eth0}
 RUN_SERVER=${RUN_SERVER-auto}
 LINKED_SERVER=${LINKED_SERVER-0}
 BOOTSTRAP_CONSUL=${BOOTSTRAP_CONSUL}
@@ -53,12 +53,12 @@ for env_line in $(env);do
 done
 
 ## Check if eth0 already exists
-IPv4_RAW=$(ip -o -4 addr show ${ADDR})
+IPv4_RAW=$(ip -o -4 addr show ${NET_DEV})
 EC=$?
 if [ ${EC} -eq 1 ];then
     echo "## Wait for pipework to attach device 'eth0'"
     pipework --wait
-    IPv4_RAW=$(ip -o -4 addr show ${ADDR})
+    IPv4_RAW=$(ip -o -4 addr show ${NET_DEV})
 fi
 IPv4=$(echo ${IPv4_RAW}|egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"|head -n1)
 if [ "X${ADDV_ADDR}" != "X" ];then
