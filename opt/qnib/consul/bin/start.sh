@@ -111,6 +111,13 @@ fi
 
 if [ "X${BOOTSTRAP_CONSUL}" == "Xfalse" ];then
     sed -i -e "s#\"bootstrap\":.*#\"bootstrap\": false,#" /etc/consul.json
+    RUN_SERVER=true
+else if [ "X${CONSUL_BOOTSTRAP}" == "Xfalse" ];then
+    sed -i -e "s#\"bootstrap\":.*#\"bootstrap\": false,#" /etc/consul.json
+    RUN_SERVER=true
+else if [ "X${CONSUL_BOOTSTRAP_EXPECT}" != "X" ];then
+    sed -i -e "s#\"bootstrap\":.*#\"bootstrap_expect\": ${CONSUL_BOOTSTRAP_EXPECT},#" /etc/consul.json
+    RUN_SERVER=true
 fi
 if [ "X${RUN_SERVER}" == "Xfalse" ];then
     sed -i -e "s#\"server\":.*#\"server\": false,#" /etc/consul.json
