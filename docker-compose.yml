@@ -4,7 +4,7 @@ dc1m:
    - "8500:8500"
    - "8302:8302"
   environment:
-   - DC_NAME=int
+   - DC_NAME=dc1
    - CONSUL_BOOTSTRAP_EXPECT=1
   dns: 127.0.0.1
   hostname: dc1master

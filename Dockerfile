@@ -1,14 +1,13 @@
 FROM qnib/syslog
 
-ENV CONSUL_BOOTSTRAP=false \
-    RUN_SERVER=false
-RUN echo "2015-10-19.1"; yum clean all; yum install -y unzip bsdtar jq
+RUN yum install -y unzip bsdtar jq
 
 # consul
-RUN curl -fsL https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip |bsdtar xf - -C /usr/local/bin/ && \
+ENV CONSUL_VER=0.6.0
+RUN curl -fsL https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_linux_amd64.zip |bsdtar xf - -C /usr/local/bin/ && \
     chmod 755 /usr/local/bin/consul
-RUN curl -Lsf http://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip | bsdtar xf - -C /opt/ && \
-    mv /opt/dist /opt/consul-web-ui
+RUN mkdir -p /opt/consul-web-ui && \
+    curl -Lsf https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_web_ui.zip | bsdtar xf - -C /opt/consul-web-ui
 # consul-template
 ENV CT_VER 0.11.1
 RUN curl -Lsf https://releases.hashicorp.com/consul-template/${CT_VER}/consul-template_${CT_VER}_linux_amd64.zip | bsdtar xf - -C /usr/local/bin/ && \
