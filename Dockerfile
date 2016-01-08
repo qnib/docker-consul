@@ -1,6 +1,6 @@
 FROM qnib/bats
 
-RUN yum install -y unzip jq
+RUN yum install -y unzip jq bc
 
 # consul
 ENV CONSUL_VER=0.6.0
