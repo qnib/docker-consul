@@ -4,8 +4,9 @@ RUN yum install -y unzip jq bc make golang git-core mercurial
 # consul
 ENV CONSUL_VER=0.6.0 \
     GOPATH=/usr/local/
-RUN curl -fsL https://github.com/evan2645/consul/archive/add-wan-address-to-node.zip | bsdtar xf - -C /opt/ && \
-    cd /opt/consul-add-wan-address-to-node/ && \
+RUN git clone https://github.com/evan2645/consul.git /opt/consul-wan/ && \
+    cd /opt/consul-wan/ && \
+    git checkout add-wan-address-to-node && \
     go get -d && \
     go build -o /usr/local/bin/consul
 RUN mkdir -p /opt/consul-web-ui && \
