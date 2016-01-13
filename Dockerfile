@@ -1,11 +1,13 @@
 FROM qnib/bats
 
-RUN yum install -y unzip jq bc
-
+RUN yum install -y unzip jq bc make golang git-core mercurial
 # consul
-ENV CONSUL_VER=0.6.0
-RUN curl -fsL https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_linux_amd64.zip |bsdtar xf - -C /usr/local/bin/ && \
-    chmod 755 /usr/local/bin/consul
+ENV CONSUL_VER=0.6.0 \
+    GOPATH=/usr/local/
+RUN curl -fsL https://github.com/evan2645/consul/archive/add-wan-address-to-node.zip | bsdtar xf - -C /opt/ && \
+    cd /opt/consul-add-wan-address-to-node/ && \
+    go get -d && \
+    go build -o /usr/local/bin/consul
 RUN mkdir -p /opt/consul-web-ui && \
     curl -Lsf https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_web_ui.zip | bsdtar xf - -C /opt/consul-web-ui
 # consul-template
