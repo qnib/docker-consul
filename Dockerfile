@@ -4,11 +4,11 @@ RUN yum install -y unzip jq bc make golang git-core mercurial
 # consul
 ENV CONSUL_VER=0.6.0 \
     GOPATH=/usr/local/
-RUN git clone https://github.com/evan2645/consul.git /opt/consul-wan/ && \
-    cd /opt/consul-wan/ && \
+RUN git clone https://github.com/evan2645/consul.git /usr/local/src/github.com/hashicorp/consul/ 
+RUN cd /usr/local/src/github.com/hashicorp/consul/ && \
     git checkout add-wan-address-to-node && \
     go get -d && \
-    go build -o /usr/local/bin/consul
+    make
 RUN mkdir -p /opt/consul-web-ui && \
     curl -Lsf https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_web_ui.zip | bsdtar xf - -C /opt/consul-web-ui
 # consul-template
