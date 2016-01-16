@@ -12,6 +12,7 @@ WAN_SERVER=${WAN_SERVER}
 CONSUL_DOMAIN_MATCH=${CONSUL_DOMAIN_MATCH-false}
 CONSUL_TRANSLATE_WAN=${CONSUL_TRANSLATE_WAN-false}
 
+
 IPv4_RAW=$(ip -o -4 addr show ${NET_DEV})
 EC=$?
 if [ ${EC} -eq 1 ];then
@@ -21,22 +22,13 @@ if [ ${EC} -eq 1 ];then
 fi
 IPv4=$(echo ${IPv4_RAW}|egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"|head -n1)
 
-### Set bind address
-CONSUL_BIND_ADDR=${IPv4}
-sed -i -e "s#\"bind_addr\":.*#\"bind_addr\": \"${CONSUL_BIND_ADDR}\",#" /etc/consul.json
-
-if [ "X${ADDV_ADDR}" == "XSERVER" ];then
-    ADDV_ADDR=$(cat /host_info/ip_eth0)
-else
-    ADDV_ADDR=${IPv4}
-fi
-if [ "X${CONSUL_ADDV_ADDR_WAN}" == "X" ];then
-    CONSUL_ADDV_ADDR_WAN=${ADDV_ADDR}   
-fi
 if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
 fi
 
+if [ "X${CONSUL_TRANSLATE_WAN}" == "Xtrue" ];then
+    sed -i -e "s#\"translate_wan_addrs\":.*#\"translate_wan_addrs\": true,#" /etc/consul.json
+fi
 if [ "X${CONSUL_NODE_NAME}" == "X" ];then
     NODE_NAME=$(hostname -f)
 else
@@ -74,13 +66,18 @@ for env_line in $(env);do
     fi
 done
 
-## Set addvertised address (within DC)
-sed -i -e "s#\"advertise_addr\":.*#\"advertise_addr\": \"${ADDV_ADDR}\",#" /etc/consul.json
-### set addvertise address wan (if accessed from the outside
-sed -i -e "s#\"advertise_addr_wan\":.*#\"advertise_addr_wan\": \"${CONSUL_ADDV_ADDR_WAN}\",#" /etc/consul.json
-## Should the consul DNS translation use the internal or the wan address?
-if [ "X${CONSUL_TRANSLATE_WAN}" == "Xtrue" ];then
-    sed -i -e "s#\"translate_wan_addrs\":.*#\"translate_wan_addrs\": true,#" /etc/consul.json
+## Check if eth0 already exists
+if [ "X${ADDV_ADDR}" != "X" ];then
+    if [ "X${ADDV_ADDR}" == "XSERVER" ];then
+        ADDV_ADDR=$(cat /host_info/ip_eth0)
+    fi
+    sed -i -e "s#\"advertise_addr\":.*#\"advertise_addr\": \"${ADDV_ADDR}\",#" /etc/consul.json
+else
+    sed -i -e "s#\"advertise_addr\":.*#\"advertise_addr\": \"${IPv4}\",#" /etc/consul.json
+fi
+### Addvertise address wan
+if [ "X${CONSUL_ADDV_ADDR_WAN}" != "X" ];then
+    sed -i -e "s#\"advertise_addr_wan\":.*#\"advertise_addr_wan\": \"${CONSUL_ADDV_ADDR_WAN}\",#" /etc/consul.json
 fi
 if [ "X${DC_NAME}" != "X" ];then
     sed -i -e "s#\"datacenter\":.*#\"datacenter\": \"${DC_NAME}\",#" /etc/consul.json
@@ -92,8 +89,6 @@ if [ ! -z "${CONSUL_CLUSTER_IPS}" ];then
           if [ ${CONSUL_DOMAIN_MATCH} == true ] && [ $(echo ${IP} | grep -c ${CONSUL_DOMAIN_SUFFIX}) -ne 1 ];then
               echo "Kick out '${IP}', since it does not match the CONSUL_DOMAIN_SUFFIX '${CONSUL_DOMAIN_SUFFIX}'"
               continue
-          elif [ "X${CONSUL_CLUSTER_SKIP_TEST}" == "Xtrue" ];then
-              START_JOIN+=" ${IP}"
           elif [ $(curl --connect-timeout 2 -sI ${IP}:8500/ui/|grep -c "HTTP/1.1 200 OK") -eq 1 ];then
               START_JOIN+=" ${IP}"
           fi
