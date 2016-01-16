@@ -27,7 +27,7 @@ RUN go get -d github.com/mitchellh/gox \
               github.com/hashicorp/go-cleanhttp \
               github.com/mitchellh/iochan
 RUN go get -d golang.org/x/tools/cmd/stringer 
-RUN go get -d github.com/hashicorp/serf 
+RUN git clone https://github.com/hashicorp/serf.git /usr/local/src/github.com/hashicorp/serf
 RUN go get -d github.com/armon/circbuf
 RUN go get -d github.com/armon/go-metrics
 RUN go get -d github.com/fsouza/go-dockerclient
@@ -45,7 +45,16 @@ RUN go get -d golang.org/x/tools/cmd/stringer
 RUN go get -d github.com/inconshreveable/muxado
 RUN go get -d github.com/hashicorp/go-checkpoint
 RUN go get -d github.com/hashicorp/scada-client
+RUN go get -d github.com/hashicorp/memberlist
+RUN go get -d github.com/hashicorp/go-syslog
+RUN go get -d github.com/hashicorp/logutils 
+RUN go get -d github.com/miekg/dns
+RUN go get -d github.com/mitchellh/cli
+RUN go get -d github.com/bgentry/speakeasy
+RUN go get -d github.com/mitchellh/mapstructure
+RUN go get -d github.com/ryanuber/columnize
 #RUN go get -d 
+RUN go get -d github.com/mattn/go-isatty
 RUN git clone https://github.com/DataDog/datadog-go.git /usr/local/src/github.com/DataDog/datadog-go 
 RUN cd /usr/local/src/github.com/hashicorp/consul/ && \
     git checkout add-wan-address-to-node && \

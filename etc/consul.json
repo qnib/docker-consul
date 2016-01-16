@@ -1,5 +1,6 @@
 {
     "bootstrap": false,
+    "bind_addr": "0.0.0.0",
     "server": false,
     "datacenter": "dc1",
     "data_dir": "/var/consul",
@@ -10,6 +11,7 @@
     "start_join": [],
     "advertise_addr": "",
     "advertise_addr_wan": "",
+    "translate_wan_addrs": false,
     "node_name": "hostname",
     "recursor": "8.8.8.8",
     "retry_max_wan": 3,
