@@ -1,14 +1,22 @@
 FROM qnib/bats
 
-RUN yum install -y unzip jq bc make golang git-core mercurial
+RUN yum install -y unzip jq bc git-core mercurial build-essential make
 # consul
 ENV CONSUL_VER=0.6.0 \
-    GOPATH=/usr/local/
-RUN git clone https://github.com/evan2645/consul.git /opt/consul-wan/ && \
-    cd /opt/consul-wan/ && \
+    GOVERSION="1.5.3" \
+    SRCROOT="/opt/go" \
+    SRCPATH="/opt/gopath" \
+    ARCH="amd64" \
+    GOPATH=/usr/local/ \
+    GOROOT=/opt/go
+## Install go
+RUN curl -sfL https://storage.googleapis.com/golang/go${GOVERSION}.linux-${ARCH}.tar.gz |bsdtar xf - -C /opt/ && \
+    ln -s /opt/go/bin/go /usr/local/bin/ && \
+    go version
+RUN git clone https://github.com/evan2645/consul.git /opt/consul/ && \
+    cd /opt/consul/ && \
     git checkout add-wan-address-to-node && \
-    go get -d && \
-    go build -o /usr/local/bin/consul
+    make
 RUN mkdir -p /opt/consul-web-ui && \
     curl -Lsf https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_web_ui.zip | bsdtar xf - -C /opt/consul-web-ui
 # consul-template
