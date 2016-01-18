@@ -10,11 +10,25 @@ CONSUL_BOOTSTRAP_SOLO=${CONSUL_BOOTSTRAP_SOLO-$BOOTSTRAP_CONSUL}
 CONSUL_CLUSTER_IPS=${CONSUL_CLUSTER_IPS-$LINKDED_SERVER}
 WAN_SERVER=${WAN_SERVER}
 CONSUL_DOMAIN_MATCH=${CONSUL_DOMAIN_MATCH-false}
+CONSUL_TRANSLATE_WAN=${CONSUL_TRANSLATE_WAN-false}
+
+
+IPv4_RAW=$(ip -o -4 addr show ${NET_DEV})
+EC=$?
+if [ ${EC} -eq 1 ];then
+    echo "## Wait for pipework to attach device 'eth0'"
+    pipework --wait
+    IPv4_RAW=$(ip -o -4 addr show ${NET_DEV})
+fi
+IPv4=$(echo ${IPv4_RAW}|egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"|head -n1)
 
 if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
 fi
 
+if [ "X${CONSUL_TRANSLATE_WAN}" == "Xtrue" ];then
+    sed -i -e "s#\"translate_wan_addrs\":.*#\"translate_wan_addrs\": true,#" /etc/consul.json
+fi
 if [ "X${CONSUL_NODE_NAME}" == "X" ];then
     NODE_NAME=$(hostname -f)
 else
@@ -53,14 +67,6 @@ for env_line in $(env);do
 done
 
 ## Check if eth0 already exists
-IPv4_RAW=$(ip -o -4 addr show ${NET_DEV})
-EC=$?
-if [ ${EC} -eq 1 ];then
-    echo "## Wait for pipework to attach device 'eth0'"
-    pipework --wait
-    IPv4_RAW=$(ip -o -4 addr show ${NET_DEV})
-fi
-IPv4=$(echo ${IPv4_RAW}|egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"|head -n1)
 if [ "X${ADDV_ADDR}" != "X" ];then
     if [ "X${ADDV_ADDR}" == "XSERVER" ];then
         ADDV_ADDR=$(cat /host_info/ip_eth0)
