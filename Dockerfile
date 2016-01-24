@@ -1,4 +1,4 @@
-FROM qnib/syslog:cos7
+FROM qnib/bats:cos7
 
 RUN yum clean all; yum install -y unzip bind-utils tar bsdtar
 # consul
