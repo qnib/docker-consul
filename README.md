@@ -1,4 +1,5 @@
 # docker-consul
+[![](https://badge.imagelayers.io/qnib/consul:latest.svg)](https://imagelayers.io/?images=qnib/consul:latest 'Details')
 
 Image to hold the consul master.
 
