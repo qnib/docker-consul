@@ -21,6 +21,4 @@ RUN curl -fsL https://github.com/CiscoCloud/consul-cli/releases/download/v${CONS
 ADD etc/supervisord.d/ /etc/supervisord.d/
 ADD etc/consul.json /etc/consul.json
 ADD opt/qnib/consul/bin/start.sh /opt/qnib/consul/bin/
-RUN ln -s /opt/qnib/consul/bin/start.sh /opt/qnib/bin/start_consul.sh
-
 ADD opt/qnib/consul/etc/bash_functions.sh /opt/qnib/consul/etc/
