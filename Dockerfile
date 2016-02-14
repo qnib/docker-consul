@@ -1,6 +1,6 @@
 FROM qnib/bats
 
-RUN dnf install -y unzip jq bc
+RUN dnf install -y unzip jq bc tar
 
 # consul
 ENV CONSUL_VER=0.6.3 \
