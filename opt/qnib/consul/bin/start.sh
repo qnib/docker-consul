@@ -10,6 +10,7 @@ CONSUL_BOOTSTRAP_SOLO=${CONSUL_BOOTSTRAP_SOLO-$BOOTSTRAP_CONSUL}
 CONSUL_CLUSTER_IPS=${CONSUL_CLUSTER_IPS-$LINKDED_SERVER}
 WAN_SERVER=${WAN_SERVER}
 CONSUL_DOMAIN_MATCH=${CONSUL_DOMAIN_MATCH-false}
+CONSUL_CURL_TIMEOUT=${CONSUL_CURL_TIMEOUT-5}
 
 if [ ! -f ${CONSUL_BIN} ];then
    CONSUL_BIN=/usr/bin/consul
@@ -85,7 +86,7 @@ if [ ! -z "${CONSUL_CLUSTER_IPS}" ];then
               continue
           elif [ "X${CONSUL_SKIP_CURL}" == "Xtrue" ];then
               START_JOIN+=" ${IP}"
-          elif [ $(curl --connect-timeout 2 -sI ${IP}:8500/ui/|grep -c "HTTP/1.1 200 OK") -eq 1 ];then
+          elif [ $(curl --connect-timeout ${CONSUL_CURL_TIMEOUT} -sI ${IP}:8500/ui/|grep -c "HTTP/1.1 200 OK") -eq 1 ];then
               START_JOIN+=" ${IP}"
           fi
        fi
