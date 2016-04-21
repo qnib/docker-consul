@@ -20,5 +20,5 @@ RUN curl -fsL https://github.com/CiscoCloud/consul-cli/releases/download/v${CONS
     rm -rf /tmp/consul-cli_${CONSUL_CLI_VER}_linux_amd64
 # supervisor start-scripts
 ADD etc/supervisord.d/ /etc/supervisord.d/
-ADD etc/consul.json /etc/consul.json
+ADD etc/consul.d/agent.json /etc/consul.d/
 RUN curl -fsL https://github.com/qnib/consul-content/releases/download/${QNIB_CONSUL}/consul.tar |tar xf - -C /opt/qnib/
