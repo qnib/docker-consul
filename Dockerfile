@@ -1,12 +1,12 @@
 FROM qnib/supervisor
 
-RUN dnf install -y unzip jq bc tar bsdtar
+RUN dnf install -y unzip jq bc tar bsdtar nmap curl
 
 # consul
 ENV CONSUL_VER=0.6.4 \
     CONSUL_CLI_VER=0.2.0 \
-    CT_VER=0.14.0 \
-    QNIB_CONSUL=0.1.1
+    CT_VER=0.15.0 \
+    QNIB_CONSUL=0.1.3.2
 RUN curl -fsL https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_linux_amd64.zip |bsdtar xf - -C /usr/local/bin/ && \
     chmod 755 /usr/local/bin/consul
 RUN mkdir -p /opt/consul-web-ui && \
@@ -22,3 +22,5 @@ RUN curl -fsL https://github.com/CiscoCloud/consul-cli/releases/download/v${CONS
 ADD etc/supervisord.d/ /etc/supervisord.d/
 ADD etc/consul.d/agent.json /etc/consul.d/
 RUN curl -fsL https://github.com/qnib/consul-content/releases/download/${QNIB_CONSUL}/consul.tar |tar xf - -C /opt/qnib/
+HEALTHCHECK --interval=15s --timeout=5s CMD /opt/qnib/consul/bin/check.sh
+
