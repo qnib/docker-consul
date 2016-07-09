@@ -34,7 +34,7 @@ $ docker run -d --name server -h server \
 ```
 The server comes up, but...
 
-![](pics/server_only.png)
+![](/pics/server_only.png)
 
 ... as it is not bootstrapped, it does not show anything.
 
@@ -89,4 +89,4 @@ $
 
 Et voila... 
 
-![](pics/cluster.png)
+![](/pics/cluster.png)
