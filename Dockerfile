@@ -1,4 +1,4 @@
-FROM qnib/supervisor
+FROM qnib/supervisor:23
 
 RUN dnf install -y unzip jq bc tar bsdtar
 
