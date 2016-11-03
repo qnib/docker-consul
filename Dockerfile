@@ -3,8 +3,8 @@ FROM qnib/supervisor
 RUN dnf install -y unzip jq bc tar bsdtar
 
 # consul
-ARG CONSUL_VER=0.6.4
-ARG CT_VER=0.15.0
+ARG CONSUL_VER=0.7.0
+ARG CT_VER=0.16.0
 
 RUN curl -fsL https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_linux_amd64.zip |bsdtar xf - -C /usr/local/bin/ \
  && chmod 755 /usr/local/bin/consul \
